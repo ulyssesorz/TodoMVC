@@ -1,28 +1,28 @@
 class Model 
 {
-    constructor()//¹¹Ôìº¯Êý£¬³õÊ¼»¯Êý¾Ý
+    constructor()//æž„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–æ•°æ®
     {
-        //±¾µØ´æ´¢
+        //æœ¬åœ°å­˜å‚¨
         this.todos = JSON.parse(localStorage.getItem('todos')) || []
     }
 
-    //»Øµ÷º¯Êý£¬Ã¿´ÎÐÞ¸ÄÍêÊý¾Ýºóµ÷ÓÃcontrollerµÄ
-    //onTodoListChangedº¯Êý,Í¨Öªview¸üÐÂÊÓÍ¼
+    //å›žè°ƒå‡½æ•°ï¼Œæ¯æ¬¡ä¿®æ”¹å®Œæ•°æ®åŽè°ƒç”¨controllerçš„
+    //onTodoListChangedå‡½æ•°,é€šçŸ¥viewæ›´æ–°è§†å›¾
     bindTodoListChanged(callback)
     {
         this.onTodoListChanged = callback
     }
 
-    //»Øµ÷²¢¸üÐÂ±¾µØÄÚ´æ
+    //å›žè°ƒå¹¶æ›´æ–°æœ¬åœ°å†…å­˜
     commit(todos)
     {
         this.onTodoListChanged(todos)
         localStorage.setItem('todos', JSON.stringify(todos))
     }
 
-    addTodo(todoText)//Ìí¼ÓÒ»¸ötodoÏîÄ¿
+    addTodo(todoText)//æ·»åŠ ä¸€ä¸ªtodoé¡¹ç›®
     {
-        //¹¹½¨Ò»¸ötodo£¬È»ºó¼ÓÈëtodosÖÐ
+        //æž„å»ºä¸€ä¸ªtodoï¼Œç„¶åŽåŠ å…¥todosä¸­
         const todo = 
         {
             id: this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1,
@@ -33,24 +33,24 @@ class Model
         this.commit(this.todos)
     }
 
-    deleteTodo(id)//É¾³ýÒ»¸ötodoÏîÄ¿
+    deleteTodo(id)//åˆ é™¤ä¸€ä¸ªtodoé¡¹ç›®
     {
-        //ÀûÓÃfilter·½·¨£¬°ÑÖ¸¶¨µÄidÂË³ý
+        //åˆ©ç”¨filteræ–¹æ³•ï¼ŒæŠŠæŒ‡å®šçš„idæ»¤é™¤
         this.todos = this.todos.filter(todo => todo.id !== id)
         this.commit(this.todos)
     }
 
-    editTodo(id, newtext)//¸ü¸ÄtodoµÄÎÄ±¾Êý¾Ý
+    editTodo(id, newtext)//æ›´æ”¹todoçš„æ–‡æœ¬æ•°æ®
     {
-        //ÀûÓÃmap·½·¨±éÀútodos£¬ÕÒµ½Ö¸¶¨id¾Í¸üÐÂtext£¬·ñÔò±£³Ötodo²»±ä
+        //åˆ©ç”¨mapæ–¹æ³•éåŽ†todosï¼Œæ‰¾åˆ°æŒ‡å®šidå°±æ›´æ–°textï¼Œå¦åˆ™ä¿æŒtodoä¸å˜
         this.todos = this.todos.map(todo => todo.id === id ?
             { id: id, text: newtext, complete: todo.complete} : todo)
         this.commit(this.todos)   
     }
 
-    toggleTodo(id)//ÐÞ¸ÄtodoÏîÄ¿µÄ×´Ì¬
+    toggleTodo(id)//ä¿®æ”¹todoé¡¹ç›®çš„çŠ¶æ€
     {
-        //ÀûÓÃmapÕÒµ½ËùÐètodo£¬ÐÞ¸Äcomplete
+        //åˆ©ç”¨mapæ‰¾åˆ°æ‰€éœ€todoï¼Œä¿®æ”¹complete
         this.todos = this.todos.map(todo => todo.id === id ?
             { id: id, text: todo.text, complete: !todo.complete} : todo)
         this.commit(this.todos)
@@ -61,104 +61,104 @@ class View
 {
     constructor() 
     {
-        //»ñÈ¡¸ùÔªËØ
+        //èŽ·å–æ ¹å…ƒç´ 
         this.list = this.getElement('#root')
 
-        //ÉèÖÃ±êÌâ
+        //è®¾ç½®æ ‡é¢˜
         this.title = this.createElement('h1')
         this.title.textContent = 'Todos'
 
-        //Ñù±í
+        //æ ·è¡¨
         this.form = this.createElement('form')
     
-        //ÉèÖÃÊäÈëÑ¡Ïî
+        //è®¾ç½®è¾“å…¥é€‰é¡¹
         this.input = this.createElement('input')
         this.input.type = 'text'
         this.input.placeholder = 'Add a todo item'
         this.input.name = 'todo'
 
-        //Ìá½»°´Å¥
+        //æäº¤æŒ‰é’®
         this.submitButton = this.createElement('button')
         this.submitButton.textContent = 'Submit'
 
-        //ÒÑÌí¼ÓµÄtoloÁÐ±í
+        //å·²æ·»åŠ çš„toloåˆ—è¡¨
         this.todoList = this.createElement('ul', 'todo-list')
         
-        //¹¹½¨form
+        //æž„å»ºform
         this.form.append(this.input, this.submitButton)
 
-        //¹¹½¨list
+        //æž„å»ºlist
         this.list.append(this.title, this.form, this.todoList)
     
-        //ÁÙÊ±±äÁ¿£¬ÓÃÓÚÊµÊ±ÐÞ¸ÄÎÄ±¾
+        //ä¸´æ—¶å˜é‡ï¼Œç”¨äºŽå®žæ—¶ä¿®æ”¹æ–‡æœ¬
         this.temporaryTodoText = ''
         this.initLocalListeners()
     }
 
-    createElement(tag, className)//ÔÚdomÖÐ´´½¨ÐÂÔªËØ
+    createElement(tag, className)//åœ¨domä¸­åˆ›å»ºæ–°å…ƒç´ 
     {
         const element = document.createElement(tag)
         if(className)
         {
-            //Èç¹ûÊÇÒ»¸öÀà£¬Ìí¼ÓÐÂµÄÀàÃû
+            //å¦‚æžœæ˜¯ä¸€ä¸ªç±»ï¼Œæ·»åŠ æ–°çš„ç±»å
             element.classList.add(className)
         }
         return element
     }
 
-    getElement(selector)//ÔÚdomÖÐ»ñÈ¡ÔªËØ
+    getElement(selector)//åœ¨domä¸­èŽ·å–å…ƒç´ 
     {
-        //²éÕÒcssÑ¡ÔñÆ÷
+        //æŸ¥æ‰¾cssé€‰æ‹©å™¨
         const element = document.querySelector(selector)
         return element
     }
 
-    //»ñÈ¡inputµÄÖµ
+    //èŽ·å–inputçš„å€¼
     get todoText()
     {
         return this.input.value
     }
-    //ÖØÖÃinputÖµ
+    //é‡ç½®inputå€¼
     resetInput()
     {
         this.input.value = ''
     }
 
-    displayTodos(todos)//ÏÔÊ¾´ý°ìÊÂÏî
+    displayTodos(todos)//æ˜¾ç¤ºå¾…åŠžäº‹é¡¹
     {
-        //ÏÈÇå¿ÕtodoList£¬Îª¸üÐÂtodoList×ö×¼±¸
+        //å…ˆæ¸…ç©ºtodoListï¼Œä¸ºæ›´æ–°todoListåšå‡†å¤‡
         while(this.todoList.firstChild)
         {
             this.todoList.removeChild(this.todoList.firstChild)
         }
         
-        //todosÎª¿Õ£¬ÏÔÊ¾'Empty list'
+        //todosä¸ºç©ºï¼Œæ˜¾ç¤º'Empty list'
         if(todos.length === 0)
         {
             const p = this.createElement('p')
             p.textContent = 'Empty list'
             this.todoList.append(p)
         }
-        //todos·Ç¿Õ£¬ÏÔÊ¾Ã¿¸ötodoÊÂÏî
+        //todoséžç©ºï¼Œæ˜¾ç¤ºæ¯ä¸ªtodoäº‹é¡¹
         else
         {
            todos.forEach(todo=>{
-            //Ã¿¸ötodoÓÃÒ»¸öli±êÊ¶
+            //æ¯ä¸ªtodoç”¨ä¸€ä¸ªliæ ‡è¯†
             const li = this.createElement('li')
             li.id = todo.id
 
-            //ÎªÃ¿¸ötodoÉèÖÃ¸´Ñ¡¿ò¡¢ÎÄ±¾¿òºÍÉ¾³ý°´Å¥
-            //Ìí¼Ó¸´Ñ¡¿ò
+            //ä¸ºæ¯ä¸ªtodoè®¾ç½®å¤é€‰æ¡†ã€æ–‡æœ¬æ¡†å’Œåˆ é™¤æŒ‰é’®
+            //æ·»åŠ å¤é€‰æ¡†
             const checkbox = this.createElement('input')
             checkbox.type = 'checkbox'
             checkbox.checked = todo.complete
 
-            //Ìí¼Ó¿É±à¼­µÄÎÄ±¾¿ò
+            //æ·»åŠ å¯ç¼–è¾‘çš„æ–‡æœ¬æ¡†
             const span = this.createElement("span")
             span.contentEditable = true
             span.classList.add('editable')
 
-            //Èç¹ûÑ¡ÔñÁË¸´Ñ¡¿ò£¬¼´°Ñtodo±êÎªcomplete£¬Ìí¼ÓÉ¾³ýÏß
+            //å¦‚æžœé€‰æ‹©äº†å¤é€‰æ¡†ï¼Œå³æŠŠtodoæ ‡ä¸ºcompleteï¼Œæ·»åŠ åˆ é™¤çº¿
             if(todo.complete)
             {
                 const strike = this.createElement('s')
@@ -170,19 +170,19 @@ class View
                 span.textContent = todo.text
             }
 
-            //Ìí¼ÓÉ¾³ý°´Å¥
+            //æ·»åŠ åˆ é™¤æŒ‰é’®
             const deleteButton = this.createElement('button', 'delete')
             deleteButton.textContent = 'Delete'
             
-            //°Ñ×ÓÔªËØÄÉÈëµ½Ö÷ÔªËØÄÚ
+            //æŠŠå­å…ƒç´ çº³å…¥åˆ°ä¸»å…ƒç´ å†…
             li.append(checkbox, span, deleteButton)
             this.todoList.append(li)
            })
         }
     }
 
-    //ÊÂ¼þ¼àÌý£¬ÈôÊÓÍ¼ÖÐ·¢Éú²Ù×÷£¨µã»÷¡¢»Ø³µ¡¢ÊäÈë£©
-    //¾ÍÈÃcontrollerµ÷ÓÃmodelµÄÏàÓ¦º¯ÊýÐÞ¸ÄÊý¾Ý
+    //äº‹ä»¶ç›‘å¬ï¼Œè‹¥è§†å›¾ä¸­å‘ç”Ÿæ“ä½œï¼ˆç‚¹å‡»ã€å›žè½¦ã€è¾“å…¥ï¼‰
+    //å°±è®©controllerè°ƒç”¨modelçš„ç›¸åº”å‡½æ•°ä¿®æ”¹æ•°æ®
     bindAddTodo(handler)
     {
         this.form.addEventListener('submit', event=>
@@ -233,7 +233,7 @@ class View
         })
     }
 
-    //»ñÈ¡ÎÄ±¾¿òµÄÊµÊ±ÊäÈë
+    //èŽ·å–æ–‡æœ¬æ¡†çš„å®žæ—¶è¾“å…¥
     initLocalListeners()
     {
         this.todoList.addEventListener('input', event=>
@@ -252,47 +252,47 @@ class Controller {
         this.model = m
         this.view = v
 
-        //°ó¶¨Ä£ÐÍµÄÊÂ¼þ¼àÌý
+        //ç»‘å®šæ¨¡åž‹çš„äº‹ä»¶ç›‘å¬
         this.model.bindTodoListChanged(this.onTodoListChanged)
         
-        //°ó¶¨ÊÓÍ¼µÄÊÂ¼þ¼àÌý
+        //ç»‘å®šè§†å›¾çš„äº‹ä»¶ç›‘å¬
         this.view.bindAddTodo(this.handleAddTodo)
         this.view.bindDeleteTodo(this.handleDeleteTodo)
         this.view.bindToggleTodo(this.handleToggleTodo)
         this.view.bindEditTodo(this.handleEditTodo)
 
-        //ÔÚ¹¹Ôìº¯ÊýÖÐµ÷ÓÃÒ»´Î£¬ÏÔÊ¾³õÊ¼todolist
+        //åœ¨æž„é€ å‡½æ•°ä¸­è°ƒç”¨ä¸€æ¬¡ï¼Œæ˜¾ç¤ºåˆå§‹todolist
         this.onTodoListChanged(this.model.todos)
     }
 
-    //ÓÃÓÚmodelµ÷ÓÃview
+    //ç”¨äºŽmodelè°ƒç”¨view
     onTodoListChanged = todos=>
     {
         this.view.displayTodos(todos)
     }
 
-    //ÏÂÁÐº¯ÊýÓÃÓÚviewµ÷ÓÃmodel£º
+    //ä¸‹åˆ—å‡½æ•°ç”¨äºŽviewè°ƒç”¨modelï¼š
 
-    //ÐÞ¸ÄÁÙÊ±Öµ
+    //ä¿®æ”¹ä¸´æ—¶å€¼
     handleEditTodo = (id, todoText)=>
     {
         this.model.editTodo(id, todoText)
     }
-    //¼à²âÊäÈë£¬ÈçÓÐÊäÈëÔòÌí¼ÓÐÂµÄtodo
+    //ç›‘æµ‹è¾“å…¥ï¼Œå¦‚æœ‰è¾“å…¥åˆ™æ·»åŠ æ–°çš„todo
     handleAddTodo = todoText=>
     {
         this.model.addTodo(todoText)
     }
-    //¼à²âÉ¾³ý°´Å¥
+    //ç›‘æµ‹åˆ é™¤æŒ‰é’®
     handleDeleteTodo = id=>
     {
         this.model.deleteTodo(id)
     }
-    //¼à²â¸´Ñ¡¿ò
+    //ç›‘æµ‹å¤é€‰æ¡†
     handleToggleTodo = id=>
     {
         this.model.toggleTodo(id)
     }
 }
 
-const list = new Controller(new Model(), new View)
+const list = new Controller(new Model(), new View())
